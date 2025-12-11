@@ -3,6 +3,7 @@ const CartItem = require('../models/cartItem');
 const Order = require('../models/order');
 const OrderItem = require('../models/orderItem');
 const Product = require('../models/product');
+const { sendEmail } = require('../services/emailService');
 const { sequelize } = require('../config/sequelize');
 
 const checkout = async (req, res) => {
@@ -61,6 +62,29 @@ const checkout = async (req, res) => {
 
         await CartItem.destroy({ where: { cartId: cart.id }, transaction: t });
         await t.commit();
+        
+        try {
+            const userEmail = req.user && req.user.email;
+            if (userEmail) {
+                const subject = `Order #${order.id} confirmed`;
+                const html = `
+                    <h2>Thank you for your order!</h2>
+                    <p>Your order <strong>#${order.id}</strong> has been placed successfully.</p>
+                    <p>Shipping address: <pre>${JSON.stringify(order.shippingAddress)}</pre></p>
+                    <p>If you have questions, reply to this email.</p>
+                `;
+                try {
+                    const info = await sendEmail({ to: userEmail, subject, html });
+                    console.log('Order confirmation email sent:', info.messageId || info.response || info);
+                } catch (err) {
+                    console.log('Failed to send order email (non-fatal):', err);
+                }
+            } else {
+                console.log('User has no email; skipping order confirmation email');
+            }
+        } catch (err) {
+            console.log('Unexpected error in notification flow', err);
+        }
 
         const createdOrder = await Order.findByPk(order.id);
         res.status(201).json({ message: 'Checkout successful', orderId: order.id, order: createdOrder });
