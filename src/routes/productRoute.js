@@ -4,8 +4,8 @@ const { list, get, create } = require('../controllers/productController');
 
 const productRouter = Router();
 
-productRouter.get('/', list);
-productRouter.get('/:id', get);
+productRouter.get('/', authMiddleware, list);
+productRouter.get('/:id', authMiddleware, get);
 productRouter.post('/admin', authMiddleware, requireAdmin, create);
 
 module.exports = productRouter;

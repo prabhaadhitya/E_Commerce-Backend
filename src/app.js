@@ -1,8 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
+
+require('./models');
 
 const connectMongoose = require('./config/mongoose');
 const { connectSequelize } = require('./config/sequelize');
+const { connectRedis } = require('./config/redis');
 
 const authRouter = require('./routes/authRoute');
 const productRouter = require('./routes/productRoute');
@@ -14,6 +18,7 @@ const reviewRouter = require('./routes/reviewRoute');
 const app = express();
 dotenv.config();
 
+app.use(cors())
 app.use(express.json());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/products', productRouter);
@@ -30,8 +35,9 @@ const startServer = async () => {
 	try {
 		await connectSequelize();
 		await connectMongoose();
+		await connectRedis();
 
-		const port = process.env.PORT || 5000;
+		const port = process.env.PORT || 5002;
 
 		app.listen(port, () => {
 			console.log(`Server is running on port ${port}`);

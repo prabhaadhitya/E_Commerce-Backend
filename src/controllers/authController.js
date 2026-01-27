@@ -7,19 +7,20 @@ dotenv.config();
 
 const register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: 'Name, email, and password are required' });
+        const { username, email, password, role } = req.body;
+        if (!username || !email || !password || !role) {
+            return res.status(400).json({ message: 'username, email, and password are required' });
         }
         const existingUser = await User.findOne({ where: {email} });
         if (existingUser) {
             return res.status(400).json({ message: 'Email already exists' });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await User.create({ name, email, password: hashedPassword });
+        const newUser = await User.create({ username, email, password: hashedPassword, role });
         const token = jwt.sign({ id: newUser.id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(201).json({
-            data: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role },
+            message: "User registered successfully",
+            data: { id: newUser.id, username: newUser.username, email: newUser.email, role: newUser.role },
             token
         });
     } catch (error) {
@@ -45,6 +46,7 @@ const login = async (req, res) => {
         }
         const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({
+            message: "Logged in successfully!",
             data: { id: user.id, name: user.name, email: user.email, role: user.role },
             token
         });
