@@ -4,6 +4,12 @@ const addReview = async (req, res) => {
     try {
         const {rating, comment} = req.body;
         const productId = parseInt(req.params.productId);
+        if (!Number.isInteger(productId)) {
+            return res.status(400).json({ message: 'Invalid productId' });
+        }
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+        }
         const userId = req.user.id;
         const review = await Review.create({ productId, userId, rating, comment });
         res.status(201).json({message: 'Review added successfully', review});

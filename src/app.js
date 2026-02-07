@@ -25,11 +25,11 @@ app.use('/api/v1/products', productRouter);
 app.use('/api/v1/uploads', uploadRouter);
 app.use('/api/v1/cart', cartRouter);
 app.use('/api/v1/orders', orderRouter);
-app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/products', reviewRouter);
 
-app.get('/', (req, res) => {
-  res.send('Hiii!');
-});
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK" })
+})
 
 const startServer = async () => {	
 	try {

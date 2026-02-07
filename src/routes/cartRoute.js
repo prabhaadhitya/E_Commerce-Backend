@@ -6,8 +6,8 @@ const cartRouter = Router();
 
 cartRouter.get('/', authMiddleware, getCart);
 cartRouter.post('/items', authMiddleware, addItem);
-cartRouter.put('/items/:id', authMiddleware, updateItem);
-cartRouter.delete('/items/:id', authMiddleware, removeItem);
+cartRouter.put('/items/:itemId', authMiddleware, updateItem);
+cartRouter.delete('/items/:itemId', authMiddleware, removeItem);
 
 module.exports = cartRouter;
 

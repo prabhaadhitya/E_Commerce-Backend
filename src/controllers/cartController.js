@@ -1,7 +1,7 @@
 const Cart = require('../models/cart');
 const CartItem = require('../models/cartItem');
 const Product = require('../models/product');
-const sequelize = require('../config/sequelize');
+const { sequelize } = require('../config/sequelize');
 
 const getCart = async (req, res) => {
     try {

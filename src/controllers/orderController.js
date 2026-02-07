@@ -34,14 +34,18 @@ const checkout = async (req, res) => {
                 await t.rollback();
                 return res.status(400).json({ message: `Insufficient stock for product ${product.name}` });
             }
-            totalCents += item.quantity * item.priceSnapshotCents;
+            totalCents += item.qty * item.priceSnapshotCents;
+        }
+        if (!Number.isInteger(totalCents) || totalCents <= 0) {
+            await t.rollback();
+            return res.status(400).json({ message: 'Invalid order total' });
         }
         
         const shippingAddress = req.body.shippingAddress || null;
         const order = await Order.create({
             userId,
             totalCents,
-            status: 'PAID',
+            status: 'paid',
             shippingAddress,
             paymentMeta: { method: 'mock' },
         }, { transaction: t });

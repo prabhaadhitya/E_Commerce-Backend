@@ -4,7 +4,7 @@ const { addReview, listReviews } = require('../controllers/reviewController');
 
 const reviewRouter = Router();
 
-reviewRouter.post('/:id', authMiddleware, addReview);
-reviewRouter.get('/:id', listReviews);
+reviewRouter.post('/:productId/reviews', authMiddleware, addReview);
+reviewRouter.get('/:productId/reviews', authMiddleware, listReviews);
 
 module.exports = reviewRouter;
