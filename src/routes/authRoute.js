@@ -5,8 +5,8 @@ const rateLimit = require('../middlewares/rateLimitMiddleware');
 
 const authRouter = Router();
 
-authRouter.post('/register', rateLimit('register', 50, 3600), register);
-authRouter.post('/login', rateLimit('login', 500, 60000), login);
+authRouter.post('/register', rateLimit, register);
+authRouter.post('/login', rateLimit, login);
 authRouter.get('/me', authMiddleware, me);
 
 module.exports = authRouter;

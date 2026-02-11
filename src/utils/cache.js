@@ -43,18 +43,4 @@ const delByPattern = async (pattern) => {
   }
 };
 
-
-const incr = async (key, expireSeconds) => {
-    try {
-        const newValue = await client.incr(key);
-        if (newValue === 1 && expireSeconds) {
-            await client.expire(key, expireSeconds);
-        }
-        return newValue;
-    } catch (error) {
-        console.log('Redis INCR Error:', error);
-        return null;    
-    }
-};
-
-module.exports = { getCache, set, del, delByPattern, incr };
+module.exports = { getCache, set, del, delByPattern };
